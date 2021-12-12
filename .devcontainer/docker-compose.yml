@@ -1,0 +1,247 @@
+version: '3.4'
+
+services:
+  api-dev:
+    container_name: grmm-api-dev
+    image: api-dev
+    restart: always
+    build:
+      context: ..
+      dockerfile: .devcontainer/api.dockerfile
+    command: ["gueen-api"]
+    environment:
+      API_PORT: ${API_PORT}
+    ports:
+      - "8000:${API_PORT}"
+    volumes:
+      - gueen-data-dev:/opt/gueen
+      - ..:/workspace:cached
+    networks:
+      dev:
+        aliases: 
+          - gueen-backend
+
+  app-dev:
+    container_name: grmm-app-dev
+    image: node:14-alpine
+    restart: always
+    command: /bin/sh -c "npm install npm@latest -g && npm install && npm run serve -- --host 0.0.0.0 --port ${APP_PORT}"
+    working_dir: /workspace/web
+    volumes:
+      - ..:/workspace:cached
+    ports:
+      - "8080:${APP_PORT}"
+    networks:
+      dev:
+        aliases: 
+          - gueen-frontend
+
+  # nats
+  nats-dev:
+    container_name: grmm-nats-dev
+    image: ${IMAGE_REPO}gueen-nats:${VERSION}
+    restart: always
+    environment:
+      API_HOST: ${API_HOST}
+      API_PORT: ${API_PORT}
+      DEV: 1
+    ports:
+      - "${NATS_PORTS}"
+    volumes:
+      - gueen-data-dev:/opt/gueen
+      - ..:/workspace:cached
+    networks:
+      dev:
+        aliases:
+          - ${API_HOST}
+          - gueen-nats
+
+  # meshcentral container
+  meshcentral-dev:
+    container_name: grmm-meshcentral-dev
+    image: ${IMAGE_REPO}gueen-meshcentral:${VERSION}
+    restart: always
+    environment: 
+      MESH_HOST: ${MESH_HOST}
+      MESH_USER: ${MESH_USER}
+      MESH_PASS: ${MESH_PASS}
+      MONGODB_USER: ${MONGODB_USER}
+      MONGODB_PASSWORD: ${MONGODB_PASSWORD}
+      NGINX_HOST_IP: ${DOCKER_NGINX_IP}
+    networks:
+      dev:
+        aliases:
+          - gueen-meshcentral
+          - ${MESH_HOST}
+    volumes:
+      - gueen-data-dev:/opt/gueen
+      - mesh-data-dev:/home/node/app/meshcentral-data
+    depends_on:
+      - mongodb-dev
+
+  # mongodb container for meshcentral
+  mongodb-dev:
+    container_name: grmm-mongodb-dev
+    image: mongo:4.4
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGODB_USER}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGODB_PASSWORD}
+      MONGO_INITDB_DATABASE: meshcentral
+    networks:
+      dev:
+        aliases:
+          - gueen-mongodb
+    volumes:
+      - mongo-dev-data:/data/db
+
+  # postgres database for api service
+  postgres-dev:
+    container_name: grmm-postgres-dev
+    image: postgres:13-alpine
+    restart: always
+    environment:
+      POSTGRES_DB: gueenrmm
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASS}
+    volumes:
+      - postgres-data-dev:/var/lib/postgresql/data
+    networks:
+      dev:
+        aliases:
+          - gueen-postgres
+
+  # redis container for celery tasks
+  redis-dev:
+    container_name: grmm-redis-dev
+    restart: always
+    command: redis-server --appendonly yes
+    image: redis:6.0-alpine
+    volumes: 
+      - redis-data-dev:/data
+    networks:
+      dev:
+        aliases:
+          - gueen-redis
+
+  init-dev:
+    container_name: grmm-init-dev
+    image: api-dev
+    restart: on-failure
+    command: ["gueen-init-dev"]
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASS: ${POSTGRES_PASS}
+      APP_HOST: ${APP_HOST}
+      API_HOST: ${API_HOST}
+      MESH_HOST: ${MESH_HOST}
+      MESH_USER: ${MESH_USER}
+      grmm_USER: ${grmm_USER}
+      grmm_PASS: ${grmm_PASS}
+      HTTP_PROTOCOL: ${HTTP_PROTOCOL}
+      APP_PORT: ${APP_PORT}
+    depends_on:
+      - postgres-dev
+      - meshcentral-dev
+    networks:
+      - dev
+    volumes:
+      - gueen-data-dev:/opt/gueen
+      - ..:/workspace:cached
+
+  # container for celery worker service
+  celery-dev:
+    container_name: grmm-celery-dev
+    image: api-dev
+    command: ["gueen-celery-dev"]
+    restart: always
+    networks:
+      - dev
+    volumes:
+      - gueen-data-dev:/opt/gueen
+      - ..:/workspace:cached
+    depends_on:
+      - postgres-dev
+      - redis-dev
+
+  # container for celery beat service
+  celerybeat-dev:
+    container_name: grmm-celerybeat-dev
+    image: api-dev
+    command: ["gueen-celerybeat-dev"]
+    restart: always
+    networks:
+      - dev
+    volumes:
+      - gueen-data-dev:/opt/gueen
+      - ..:/workspace:cached
+    depends_on:
+      - postgres-dev
+      - redis-dev
+
+  # container for websockets communication
+  websockets-dev:
+    container_name: grmm-websockets-dev
+    image: api-dev
+    command: ["gueen-websockets-dev"]
+    restart: always
+    networks:
+      dev:
+        aliases:
+          - gueen-websockets
+    volumes:
+      - gueen-data-dev:/opt/gueen
+      - ..:/workspace:cached
+    depends_on:
+      - postgres-dev
+      - redis-dev
+
+  # container for gueen reverse proxy
+  nginx-dev:
+    container_name: grmm-nginx-dev
+    image: ${IMAGE_REPO}gueen-nginx:${VERSION}
+    restart: always
+    environment:
+      APP_HOST: ${APP_HOST}
+      API_HOST: ${API_HOST}
+      MESH_HOST: ${MESH_HOST}
+      CERT_PUB_KEY: ${CERT_PUB_KEY}
+      CERT_PRIV_KEY: ${CERT_PRIV_KEY}
+      APP_PORT: ${APP_PORT}
+      API_PORT: ${API_PORT}
+      DEV: 1
+    networks:
+      dev:
+        ipv4_address: ${DOCKER_NGINX_IP}
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - gueen-data-dev:/opt/gueen
+
+  mkdocs-dev:
+    container_name: grmm-mkdocs-dev
+    image: api-dev
+    restart: always
+    command: ["gueen-mkdocs-dev"]
+    ports:
+      - "8005:8005"
+    volumes:
+      - ..:/workspace:cached
+    networks:
+      - dev
+
+volumes:
+  gueen-data-dev:
+  postgres-data-dev:
+  mongo-dev-data:
+  mesh-data-dev:
+  redis-data-dev:
+
+networks:
+  dev:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: ${DOCKER_NETWORK}

@@ -1,0 +1,60 @@
+# creates python virtual env
+FROM python:3.9.9-slim AS CREATE_VENV_STAGE
+
+ARG DEBIAN_FRONTEND=noninteractive
+
+# # set env variables
+ENV VIRTUAL_ENV /opt/venv
+ENV gueen_DIR /opt/gueen
+ENV gueen_TMP_DIR /tmp/gueen
+RUN python3 -m venv $VIRTUAL_ENV
+ENV PATH "${VIRTUAL_ENV}/bin:$PATH"
+
+SHELL ["/bin/bash", "-e", "-o", "pipefail", "-c"]
+
+COPY api/gueenrmm/requirements.txt ${gueen_TMP_DIR}/api/requirements.txt
+
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends gcc libc6-dev && \
+    rm -rf /var/lib/apt/lists/* && \
+    pip install --upgrade pip && \
+    pip install --no-cache-dir setuptools wheel && \
+    pip install --no-cache-dir -r ${gueen_TMP_DIR}/api/requirements.txt
+
+
+# runtime image
+FROM python:3.9.9-slim
+
+# set env variables
+ENV VIRTUAL_ENV /opt/venv
+ENV gueen_DIR /opt/gueen
+ENV gueen_TMP_DIR /tmp/gueen
+ENV gueen_READY_FILE ${gueen_DIR}/tmp/gueen.ready
+ENV gueen_USER gueen
+ENV PATH "${VIRTUAL_ENV}/bin:$PATH"
+
+# copy files from repo
+COPY api/gueenrmm ${gueen_TMP_DIR}/api
+COPY scripts ${gueen_TMP_DIR}/scripts
+
+# copy go install from build stage
+COPY --from=CREATE_VENV_STAGE ${VIRTUAL_ENV} ${VIRTUAL_ENV}
+
+# install deps
+RUN apt-get update && \
+    apt-get upgrade -y && \
+    apt-get install -y --no-install-recommends rsync && \
+    rm -rf /var/lib/apt/lists/* && \
+    groupadd -g 1000 "${gueen_USER}" && \
+    useradd -M -d "${gueen_DIR}" -s /bin/bash -u 1000 -g 1000 "${gueen_USER}"
+
+SHELL ["/bin/bash", "-e", "-o", "pipefail", "-c"]
+
+# docker init
+COPY docker/containers/gueen/entrypoint.sh /
+RUN chmod +x /entrypoint.sh
+ENTRYPOINT ["/entrypoint.sh"]
+
+WORKDIR ${gueen_DIR}/api
+
+EXPOSE 80 443 8383

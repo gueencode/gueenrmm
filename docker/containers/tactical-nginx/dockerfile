@@ -1,0 +1,12 @@
+FROM nginx:stable-alpine
+
+ENV gueen_DIR /opt/gueen
+
+RUN apk add --no-cache openssl bash
+
+SHELL ["/bin/bash", "-e", "-o", "pipefail", "-c"]
+
+COPY docker/containers/gueen-nginx/entrypoint.sh /docker-entrypoint.d/
+RUN chmod +x /docker-entrypoint.d/entrypoint.sh
+
+EXPOSE 443 80

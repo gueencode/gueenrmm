@@ -1,0 +1,18 @@
+FROM nats:2.3.3-alpine
+
+ENV gueen_DIR /opt/gueen
+ENV gueen_READY_FILE ${gueen_DIR}/tmp/gueen.ready
+
+RUN apk add --no-cache inotify-tools supervisor bash
+
+SHELL ["/bin/bash", "-e", "-o", "pipefail", "-c"]
+
+COPY natsapi/bin/nats-api /usr/local/bin/
+RUN chmod +x /usr/local/bin/nats-api
+
+COPY docker/containers/gueen-nats/entrypoint.sh /
+RUN chmod +x /entrypoint.sh
+
+ENTRYPOINT [ "/entrypoint.sh" ]
+
+EXPOSE 4222

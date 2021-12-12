@@ -1,0 +1,1 @@
+Remove-Item -Path "C:\ProgramData\Microsoft\Windows\Start Menu\Programs\Gueen RMM Agent.lnk" -Force

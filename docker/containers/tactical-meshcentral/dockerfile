@@ -1,0 +1,21 @@
+FROM node:14-alpine
+
+WORKDIR /home/node/app
+
+ENV gueen_DIR /opt/gueen
+
+RUN apk add --no-cache bash
+
+SHELL ["/bin/bash", "-e", "-o", "pipefail", "-c"]
+
+COPY api/gueenrmm/gueenrmm/settings.py /tmp/settings.py
+
+RUN grep -o 'MESH_VER.*' /tmp/settings.py | cut -d'"' -f 2 > /tmp/MESH_VER && \
+    npm install meshcentral@$(cat /tmp/MESH_VER)
+
+COPY docker/containers/gueen-meshcentral/entrypoint.sh /
+RUN chmod +x /entrypoint.sh
+
+EXPOSE 80 443
+
+ENTRYPOINT [ "/entrypoint.sh" ] 
