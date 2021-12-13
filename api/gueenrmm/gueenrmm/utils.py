@@ -227,7 +227,7 @@ def get_latest_grmm_ver() -> str:
 
     try:
         for line in r.text.splitlines():
-            if "grmm_VERSION" in line:
+            if "GRMM_VERSION" in line:
                 return line.split(" ")[2].strip('"')
     except Exception as e:
         DebugLog.error(message=str(e))

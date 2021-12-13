@@ -15,7 +15,7 @@ EXE_DIR = os.path.join(BASE_DIR, "gueenrmm/private/exe")
 AUTH_USER_MODEL = "accounts.User"
 
 # latest release
-grmm_VERSION = "0.10.4"
+GRMM_VERSION = "0.10.4"
 
 # bump this version everytime vue code is changed
 # to alert user they need to manually refresh their browser
