@@ -85,7 +85,7 @@ def dashboard_info(request):
 
     return Response(
         {
-            "grmm_version": settings.grmm_VERSION,
+            "grmm_version": settings.GRMM_VERSION,
             "latest_grmm_ver": get_latest_grmm_ver(),
             "dark_mode": request.user.dark_mode,
             "show_community_scripts": request.user.show_community_scripts,
