@@ -1,19 +1,10 @@
 # Gueen RMM
 
-[![Build Status](https://dev.azure.com/dcparsi/gueen%20RMM/_apis/build/status/gueencode.gueenrmm?branchName=develop)](https://dev.azure.com/dcparsi/gueen%20RMM/_build/latest?definitionId=4&branchName=develop)
-[![Coverage Status](https://coveralls.io/repos/github/gueencode/gueenrmm/badge.png?branch=develop&kill_cache=1)](https://coveralls.io/github/gueencode/gueenrmm?branch=develop)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/python/black)
 
 Gueen RMM is a remote monitoring & management tool for Windows computers, built with Django and Vue.\
 It uses an [agent](https://github.com/gueencode/rmmagent) written in golang and integrates with [MeshCentral](https://github.com/Ylianst/MeshCentral)
-
-# [LIVE DEMO](https://rmm.gueenrmm.io/)
-Demo database resets every hour. A lot of features are disabled for obvious reasons due to the nature of this app.
-
-### [Discord Chat](https://discord.gg/upGTkWp)
-
-### [Documentation](https://gueencode.github.io/gueenrmm/)
 
 ## Features
 
@@ -35,4 +26,4 @@ Demo database resets every hour. A lot of features are disabled for obvious reas
 
 ## Installation / Backup / Restore / Usage
 
-### Refer to the [documentation](https://gueencode.github.io/gueenrmm/)
+Documentation link to be delivered shortly. 
