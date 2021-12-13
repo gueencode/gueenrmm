@@ -1,4 +1,4 @@
-<template>
+GRMM_VERSION<template>
   <q-layout view="hHh lpR fFf">
     <q-header elevated class="bg-grey-9 text-white">
       <q-banner v-if="needRefresh" inline-actions class="bg-red text-white text-center">

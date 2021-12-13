@@ -45,8 +45,8 @@ TMP_SETTINGS=$(mktemp -p "" "rmmsettings_XXXXXXXXXX")
 curl -s -L "${LATEST_SETTINGS_URL}" > ${TMP_SETTINGS}
 SETTINGS_FILE="/rmm/api/gueenrmm/gueenrmm/settings.py"
 
-LATEST_grmm_VER=$(grep "^grmm_VERSION" "$TMP_SETTINGS" | awk -F'[= "]' '{print $5}')
-CURRENT_grmm_VER=$(grep "^grmm_VERSION" "$SETTINGS_FILE" | awk -F'[= "]' '{print $5}')
+LATEST_grmm_VER=$(grep "^GRMM_VERSION" "$TMP_SETTINGS" | awk -F'[= "]' '{print $5}')
+CURRENT_grmm_VER=$(grep "^GRMM_VERSION" "$SETTINGS_FILE" | awk -F'[= "]' '{print $5}')
 
 if [[ "${CURRENT_grmm_VER}" == "${LATEST_grmm_VER}" ]] && ! [[ "$force" = true ]]; then
   printf >&2 "${GREEN}Already on latest version. Current version: ${CURRENT_grmm_VER} Latest version: ${LATEST_grmm_VER}${NC}\n"

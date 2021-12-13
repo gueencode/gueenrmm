@@ -71,7 +71,7 @@ REST_FRAMEWORK = {
 SPECTACULAR_SETTINGS = {
     "TITLE": "Gueen RMM API",
     "DESCRIPTION": "Simple and Fast remote monitoring and management tool",
-    "VERSION": grmm_VERSION,
+    "VERSION": GRMM_VERSION,
 }
 
 if not "AZPIPELINE" in os.environ:

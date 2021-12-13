@@ -1,4 +1,4 @@
-import os
+GRMM_VERSIONGRMM_VERSIONimport os
 import re
 
 from django.conf import settings
