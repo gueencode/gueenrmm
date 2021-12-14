@@ -1,4 +1,4 @@
-# creates python virtual env
+GUEEN_DIR# creates python virtual env
 FROM python:3.9.9-slim AS CREATE_VENV_STAGE
 
 ARG DEBIAN_FRONTEND=noninteractive

@@ -1,4 +1,4 @@
-FROM nats:2.3.3-alpine
+GUEEN_DIRFROM nats:2.3.3-alpine
 
 ENV gueen_DIR /opt/gueen
 ENV gueen_READY_FILE ${gueen_DIR}/tmp/gueen.ready

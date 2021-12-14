@@ -8,8 +8,8 @@ if [ "${DEV}" = 1 ]; then
   NATS_CONFIG=/workspace/api/gueenrmm/nats-rmm.conf
   NATS_API_CONFIG=/workspace/api/gueenrmm/nats-api.conf
 else
-  NATS_CONFIG="${gueen_DIR}/api/nats-rmm.conf"
-  NATS_API_CONFIG="${gueen_DIR}/api/nats-api.conf"
+  NATS_CONFIG="${GUEEN_DIR}/api/nats-rmm.conf"
+  NATS_API_CONFIG="${GUEEN_DIR}/api/nats-api.conf"
 fi
 
 sleep 15

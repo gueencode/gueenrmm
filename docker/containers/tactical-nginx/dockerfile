@@ -1,4 +1,4 @@
-FROM nginx:stable-alpine
+GUEEN_DIRFROM nginx:stable-alpine
 
 ENV gueen_DIR /opt/gueen
 

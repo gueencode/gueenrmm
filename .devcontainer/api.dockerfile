@@ -1,4 +1,4 @@
-FROM python:3.9.9-slim
+GUEEN_DIRFROM python:3.9.9-slim
 
 ENV gueen_DIR /opt/gueen
 ENV gueen_READY_FILE ${gueen_DIR}/tmp/gueen.ready

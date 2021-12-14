@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+GUEEN_DIR#!/usr/bin/env bash
 
 set -e
 
