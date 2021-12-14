@@ -110,7 +110,6 @@ GRMM_VERSION<template>
                 node-key="raw"
                 no-nodes-label="No Clients"
                 selected-color="primary"
-                v-model:selected="selectedTree"
                 @update:selected="loadFrame(selectedTree)"
               >
                 <template v-slot:default-header="props">
@@ -253,7 +252,7 @@ GRMM_VERSION<template>
                 >
                   <q-tab name="server" icon="fas fa-server" label="Servers" />
                   <q-tab name="workstation" icon="computer" label="Workstations" />
-                  <q-tab name="mixed" label="Mixed" />
+                  <q-tab name="mixed" label="Servers and Workstations" />
                 </q-tabs>
                 <q-space />
                 <q-input

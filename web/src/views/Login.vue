@@ -15,7 +15,7 @@
                 v-model="credentials.username"
                 label="Username"
                 lazy-rules
-                :rules="[val => (val && val.length > 0) || 'This field is required']"
+                :rules="[val => (val && val.length > 0) || 'Really gonna try without a password? Or was it your username?']"
               />
               <q-input
                 v-model="credentials.password"
@@ -23,7 +23,7 @@
                 :type="isPwd ? 'password' : 'text'"
                 label="Password"
                 lazy-rules
-                :rules="[val => (val && val.length > 0) || 'This field is required']"
+                :rules="[val => (val && val.length > 0) || 'Really gonna try without a password? Or was it your username?']"
               >
                 <template v-slot:append>
                   <q-icon
@@ -50,7 +50,7 @@
                   autofocus
                   outlined
                   v-model="credentials.twofactor"
-                  :rules="[val => (val && val.length > 0) || 'This field is required']"
+                  :rules="[val => (val && val.length > 0) || 'Nah, son. I need this. Can\'t skip!']"
                 />
               </q-card-section>
 
