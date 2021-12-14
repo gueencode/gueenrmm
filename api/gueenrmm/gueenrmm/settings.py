@@ -15,11 +15,11 @@ EXE_DIR = os.path.join(BASE_DIR, "gueenrmm/private/exe")
 AUTH_USER_MODEL = "accounts.User"
 
 # latest release
-GRMM_VERSION = "0.10.10"
+GRMM_VERSION = "0.10.12"
 
 # bump this version everytime vue code is changed
 # to alert user they need to manually refresh their browser
-APP_VER = "0.0.153"
+APP_VER = "0.0.154"
 
 # https://github.com/gueencode/rmmagent
 LATEST_AGENT_VER = "1.7.1"
